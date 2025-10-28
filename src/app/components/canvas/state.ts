@@ -38,7 +38,7 @@ const iterate = (bound: Size) => (ball: Ball) => {
 
 export const click =
   (state: State) =>
-  (event: PointerEvent): State => {
+  (event: MouseEvent): State => {
     const { offsetX, offsetY } = event;
     const target = state.pos.find(
       (p) =>
