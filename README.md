@@ -1,59 +1,93 @@
-# Jeu
+# CPA
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.1.
+## Pour lancer le projet
 
-## Development server
+### Prérequis
 
-To start a local development server, run:
+- nodejs
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Installation
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+ou avec yarn
 
 ```bash
-ng generate --help
+yarn install
 ```
 
-## Building
-
-To build the project run:
+### Lancer le projet
 
 ```bash
-ng build
+npm run start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+ou avec yarn
 
 ```bash
-ng test
+yarn start
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Changer le cache de yarn (pour ne pas dépasser le quota de la ppit)
 
 ```bash
-ng e2e
+mkdir /Vrac/cache-yarn
+yarn config set cache-folder /Vrac/cache-yarn
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## S7
 
-## Additional Resources
+Fourni : 2 balles rouges sans la bleu
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+A faire :
+
+- ajouter des balles
+- changer la couleur des balles
+- zoom translation
+
+  - zoom sur 0 0
+  - zoom sur x y
+  - bonus translation
+
+## S8
+
+Fourni : correction S7
+
+A faire :
+
+- ajouter la balle bleu
+- collision avec les rouges
+- balle bleu golf
+
+## S9
+
+Fourni : correction S8
+
+A faire :
+
+- force gravitationnel
+- random work
+- magnetic
+- frottements
+
+## Projet
+
+Objectif créer un petit jeu en 2D (ou 3D isométrique) jouable en navigateur.
+
+Contraintes :
+Avoir au moins un de ces éléments présent dans le jeu :
+
+- de la physique (collision, gravité)
+- de la génération aléatoire (création de niveau aléatoire: labyrinthe, plateforme, ennemi)
+- du pathfinding (des éléments de jeu utilisant un algo de pathfinding: Dijkstra, A*, D*)
+
+### Exemples/Idées
+
+- jeu de plateforme: gravité, collision, niveaux aléatoires
+- aventure (zelda like): collision, pathfinding, niveaux aléatoire
+- rogue like: collision, pathfinding, niveaux aléatoire
+- shoot them up: gravité, collision, ennemis aléatoire
+- jeu de billard: collision
+- pacman: pathfinding
