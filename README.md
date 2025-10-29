@@ -1,6 +1,6 @@
-# Projet jeu - SIGA
+# Projet jeu SIGA - Shajudan Invaders
 
-Projet de jeu pour la matière *Swarm Intelligence and Genetic Algorithm* basé sur le repo [Canva](https://github.com/arthurescriou/canvas) d'Artur Escriou.
+Projet de jeu pour la matière *Swarm Intelligence and Genetic Algorithm* basé la blibliothèque moteur de jeu [PixiJS](https://pixijs.com/).
 
 ## Pour lancer le projet
 
