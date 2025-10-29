@@ -1,7 +1,7 @@
 import { Application } from "pixi.js";
 import { addStars } from "./decor/stars";
 import { Parameters } from "./parameters";
-import { addPlayer } from "./entities/player";
+import { Player } from "./entities/player";
 
 // Create a PixiJS application.
 const app = new Application();
@@ -15,5 +15,6 @@ const app = new Application();
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
   addStars(app);
-  addPlayer(app);
+  const player = new Player(app.screen);
+  app.stage.addChild(player.view);
 })();

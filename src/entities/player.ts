@@ -1,11 +1,17 @@
-import { Application, Graphics } from "pixi.js";
+import { Container, Graphics, Rectangle } from "pixi.js";
 import playerSvg from "/assets/player.svg?raw";
 
-export function addPlayer(app: Application) {
-  const graphics = new Graphics().svg(playerSvg);
+export class Player {
+  view: Container;
+  graphics: Graphics;
 
-  graphics.x = app.screen.width / 2 + 100;
-  graphics.y = app.screen.height / 8;
+  constructor(screen: Rectangle) {
+    this.view = new Container();
 
-  app.stage.addChild(graphics);
+    this.graphics = new Graphics().svg(playerSvg);
+    this.graphics.x = screen.width / 2 + 100;
+    this.graphics.y = screen.height / 8;
+
+    this.view.addChild(this.graphics);
+  }
 }
