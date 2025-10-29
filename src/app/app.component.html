@@ -1,9 +1,0 @@
-<div class="container" #container>
-  <ng-container *ngIf="size; else loading">
-    <app-canvas [height]="size.height" [width]="size.width"></app-canvas>
-  </ng-container>
-
-  <ng-template #loading>
-    <app-loader></app-loader>
-  </ng-template>
-</div>
