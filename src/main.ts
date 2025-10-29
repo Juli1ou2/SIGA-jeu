@@ -11,7 +11,7 @@ const app = new Application();
   await app.init({ background: Parameters.BACKGROUND_COLOR, resizeTo: window });
 
   // Then adding the application's canvas to the DOM body.
-  document.body.appendChild(app.canvas);
+  document.getElementById("pixi-container")!.appendChild(app.canvas);
 
   addStars(app);
 })();
