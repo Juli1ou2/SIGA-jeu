@@ -1,33 +1,40 @@
-import { Container, Graphics, Rectangle } from "pixi.js";
-import playerSvg from "/assets/player.svg?raw";
+import { Container, Graphics, Rectangle, Texture } from "pixi.js";
 import { Parameters } from "../parameters";
 
 export class Player {
-  view: Container;
+  viewContainer: Container;
   graphics: Graphics;
-  screen: Rectangle
+  screen: Rectangle;
 
   constructor(_screen: Rectangle) {
-    this.view = new Container();
+    const texture = Texture.from('player');
+    this.viewContainer = new Container();
     this.screen = _screen;
 
-    this.graphics = new Graphics().svg(playerSvg);
-    this.graphics.x = _screen.width / 2 - 250;
-    console.log("height!!", this.view.height);
-    this.graphics.y = _screen.height / 2 + this.view.height;
-    
-    this.view.addChild(this.graphics);
+    this.graphics = new Graphics().rect(0, 0, 74, 34).fill(texture);
+    this.viewContainer.addChild(this.graphics);
+
+    this.viewContainer.x = this.screen.width / 6;
+    this.viewContainer.y = this.screen.height / 2;
+    this.viewContainer.pivot.x = this.viewContainer.width / 2;
+    this.viewContainer.pivot.y = this.viewContainer.height / 2;
   }
-  
+
   willBeTooHigh(): boolean {
-    console.log("1screen height:", this.screen.height, "y: ", this.graphics.y);
-    console.log("getSize():", this.view.getSize());
-    return this.graphics.y + this.view.height - Parameters.PLAYER_SPEED <= 0 ? true : false;
+    return this.viewContainer.y -
+      this.viewContainer.height / 2 -
+      Parameters.PLAYER_SPEED <=
+      0
+      ? true
+      : false;
   }
-  
+
   willBeTooLow(): boolean {
-    console.log("2screen height:", this.screen.height, "y: ", this.graphics.y);
-    console.log("getSize():", this.view.getSize());
-    return this.graphics.y + Parameters.PLAYER_SPEED >= this.screen.height ? true : false;
+    return this.viewContainer.y +
+      this.viewContainer.height / 2 +
+      Parameters.PLAYER_SPEED >=
+      this.screen.height
+      ? true
+      : false;
   }
 }

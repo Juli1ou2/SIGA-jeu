@@ -1,4 +1,4 @@
-import { Application } from "pixi.js";
+import { Application, Assets } from "pixi.js";
 import { addStars } from "./decor/stars";
 import { Parameters } from "./parameters";
 import { Player } from "./entities/player";
@@ -12,18 +12,25 @@ const app = new Application();
 
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
+  await Assets.load([
+    {
+      alias: 'player',
+      src: 'assets/player.png',
+    },
+  ]);
+
   addStars(app);
 
   const playerController = new PlayerController();
   const player = new Player(app.screen);
-  app.stage.addChild(player.view);
-
+  app.stage.addChild(player.viewContainer);
+  
   app.ticker.add((_time) => {
     if (playerController.keys.up.pressed && !player.willBeTooHigh()) {
-      player.graphics.y -= Parameters.PLAYER_SPEED;
+      player.viewContainer.y -= Parameters.PLAYER_SPEED;
     }
     if (playerController.keys.down.pressed && !player.willBeTooLow()) {
-      player.graphics.y += Parameters.PLAYER_SPEED;
+      player.viewContainer.y += Parameters.PLAYER_SPEED;
     }
-  });
+  });  
 })();
