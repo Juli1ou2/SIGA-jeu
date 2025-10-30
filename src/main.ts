@@ -1,5 +1,6 @@
 import { Application } from "pixi.js";
 import { addStars } from "./decor/stars";
+import { addEnemies } from "./entities/enemies.ts";
 import { Parameters } from "./parameters";
 
 // Create a PixiJS application.
@@ -14,4 +15,5 @@ const app = new Application();
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
   addStars(app);
+  await addEnemies(app);
 })();
