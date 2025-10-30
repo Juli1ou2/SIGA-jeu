@@ -15,5 +15,5 @@ const app = new Application();
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
   addStars(app);
-  addAsteroids(app);
+  await addAsteroids(app);
 })();
