@@ -17,6 +17,18 @@ const app = new Application();
       alias: 'player',
       src: 'assets/player.png',
     },
+    {
+      alias: 'start-button',
+      src: 'assets/start-button.png',
+    },
+    {
+      alias: 'reset-button',
+      src: 'assets/reset-button.png',
+    },
+    {
+      alias: 'pause-button',
+      src: 'assets/pause-button.png',
+    },
   ]);
   
   const playerController = new PlayerController();

@@ -1,11 +1,8 @@
-import {Application, Assets, Sprite, Texture} from 'pixi.js';
+import {Application, Sprite, Texture} from 'pixi.js';
 
 export async function createStartButton(app: Application) {
-    // Load texture
-    await Assets.load("assets/start-button.png");
-
     // Create button texture
-    const textureButton = Texture.from('assets/start-button.png');
+    const textureButton = Texture.from('start-button');
 
     // Create button sprite
     const startButton = new Sprite(textureButton);
@@ -31,11 +28,8 @@ export async function createStartButton(app: Application) {
 }
 
 export async function createResetButton(app: Application) {
-    // Load texture
-    await Assets.load("assets/reset-button.png");
-
     // Create button texture
-    const textureButton = Texture.from('assets/reset-button.png');
+    const textureButton = Texture.from('reset-button');
 
     // Create button sprite
     const resetButton = new Sprite(textureButton);

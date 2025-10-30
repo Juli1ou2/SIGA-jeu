@@ -1,4 +1,4 @@
-import {Application, Assets, Sprite, Container} from "pixi.js";
+import {Application, Sprite, Container} from "pixi.js";
 import {addStars} from "../decor/stars.ts";
 import {addEnemies} from "../entities/enemies.ts";
 import {addAsteroids} from "../decor/asteroid.ts";
@@ -24,9 +24,7 @@ export async function launchMenu(app: Application) {
     const startButton = await createStartButton(app);
     uiContainer.addChild(startButton);
 
-    // Charger et créer l'icône pause
-    await Assets.load(["assets/pause-button.png", "assets/reset-button.png"]);
-    const pauseIcon = Sprite.from("assets/pause-button.png");
+    const pauseIcon = Sprite.from("pause-button");
     pauseIcon.anchor.set(0.5);
 
     // Redimensionner à 200px de hauteur en gardant les proportions
