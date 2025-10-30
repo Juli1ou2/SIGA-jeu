@@ -1,5 +1,4 @@
 import { Application, Assets } from "pixi.js";
-import { addStars } from "./decor/stars";
 import { Parameters } from "./parameters";
 import {launchMenu} from "./menu/menu.ts";
 import { Player } from "./entities/player";
@@ -19,10 +18,7 @@ const app = new Application();
       src: 'assets/player.png',
     },
   ]);
-
-  launchMenu(app)
-  addStars(app);
-
+  
   const playerController = new PlayerController();
   const player = new Player(app.screen);
   app.stage.addChild(player.viewContainer);
@@ -34,5 +30,7 @@ const app = new Application();
     if (playerController.keys.down.pressed && !player.willBeTooLow()) {
       player.viewContainer.y += Parameters.PLAYER_SPEED;
     }
-  });  
+  });
+
+  launchMenu(app)
 })();
