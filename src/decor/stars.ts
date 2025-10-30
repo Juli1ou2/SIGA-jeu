@@ -1,7 +1,7 @@
 import { Application, Graphics } from "pixi.js";
 
 export function addStars(app: Application) {
-  const starCount = 50;
+  const starCount = 20;
 
   // Create a graphics object to hold all the stars.
   const graphics = new Graphics();
