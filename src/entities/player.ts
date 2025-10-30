@@ -37,4 +37,12 @@ export class Player {
       ? true
       : false;
   }
+
+  getX(){
+    return this.viewContainer.x;
+  }
+
+  getY(){
+    return this.viewContainer.y;
+  }
 }
