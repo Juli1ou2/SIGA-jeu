@@ -1,6 +1,7 @@
 import { Application, Assets } from "pixi.js";
 import { addStars } from "./decor/stars";
 import { Parameters } from "./parameters";
+import {launchMenu} from "./menu/menu.ts";
 import { Player } from "./entities/player";
 import { PlayerController } from "./controllers/player.controller";
 
@@ -19,6 +20,7 @@ const app = new Application();
     },
   ]);
 
+  launchMenu(app)
   addStars(app);
 
   const playerController = new PlayerController();
