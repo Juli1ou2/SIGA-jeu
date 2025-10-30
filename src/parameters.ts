@@ -1,3 +1,6 @@
 export enum Parameters {
-    BACKGROUND_COLOR = "#031228ff"
+    COLOR_BACKGROUND = "#031228ff",
+
+    PLAYER_SPEED = 10,
+    PLAYER_HEALTH = 10,
 }
