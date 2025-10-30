@@ -4,15 +4,12 @@ import { Parameters } from "./parameters";
 import { Player } from "./entities/player";
 import { PlayerController } from "./controllers/player.controller";
 
-// Create a PixiJS application.
 const app = new Application();
 
 // Asynchronous IIFE
 (async () => {
-  // Intialize the application.
   await app.init({ background: Parameters.COLOR_BACKGROUND, resizeTo: window });
 
-  // Then adding the application's canvas to the DOM body.
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
   addStars(app);
@@ -22,9 +19,10 @@ const app = new Application();
   app.stage.addChild(player.view);
 
   app.ticker.add((_time) => {
-    if (playerController.keys.up.pressed){
+    if (playerController.keys.up.pressed && !player.willBeTooHigh()) {
       player.graphics.y -= Parameters.PLAYER_SPEED;
-    } if (playerController.keys.down.pressed){
+    }
+    if (playerController.keys.down.pressed && !player.willBeTooLow()) {
       player.graphics.y += Parameters.PLAYER_SPEED;
     }
   });
