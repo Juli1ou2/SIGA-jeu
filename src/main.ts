@@ -1,17 +1,38 @@
-import { Application } from "pixi.js";
+import { Application, Assets } from "pixi.js";
+import { addStars } from "./decor/stars";
 import { Parameters } from "./parameters";
 import {launchMenu} from "./menu/menu.ts";
+import { Player } from "./entities/player";
+import { PlayerController } from "./controllers/player.controller";
 
-// Create a PixiJS application.
 const app = new Application();
 
 // Asynchronous IIFE
 (async () => {
-  // Intialize the application.
-  await app.init({ background: Parameters.BACKGROUND_COLOR, resizeTo: window });
+  await app.init({ background: Parameters.COLOR_BACKGROUND, resizeTo: window });
 
-  // Then adding the application's canvas to the DOM body.
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
+  await Assets.load([
+    {
+      alias: 'player',
+      src: 'assets/player.png',
+    },
+  ]);
+
   launchMenu(app)
+  addStars(app);
+
+  const playerController = new PlayerController();
+  const player = new Player(app.screen);
+  app.stage.addChild(player.viewContainer);
+  
+  app.ticker.add((_time) => {
+    if (playerController.keys.up.pressed && !player.willBeTooHigh()) {
+      player.viewContainer.y -= Parameters.PLAYER_SPEED;
+    }
+    if (playerController.keys.down.pressed && !player.willBeTooLow()) {
+      player.viewContainer.y += Parameters.PLAYER_SPEED;
+    }
+  });  
 })();
