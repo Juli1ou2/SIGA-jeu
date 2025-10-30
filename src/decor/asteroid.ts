@@ -8,10 +8,10 @@ const rotationSpeeds = new WeakMap<Graphics, number>();
 const SCALES = [1, 2.0, 3.5];
 
 // Vitesse du "tapis roulant" (groupes) en px/s
-const GROUP_SPEED_PX_S = 300; // ↑ augmente si tu veux aller plus vite
+const GROUP_SPEED_PX_S = 200; // ↑ augmente si tu veux aller plus vite
 
 // Vitesse des astéroïdes spawnés (facteur * group speed)
-const SPAWN_SPEED_FACTOR = 1.35; // ils filent un peu plus vite que le tapis
+const SPAWN_SPEED_FACTOR = 1.15; // ils filent un peu plus vite que le tapis
 
 // Espacement horizontal voulu entre deux spawns (en pixels)
 const DESIRED_SPACING_PX = 220;
@@ -124,7 +124,7 @@ function createOneAsteroid(): Graphics {
   const bounds = asteroid.getLocalBounds();
   asteroid.pivot.set(bounds.width / 2, bounds.height / 2);
 
-  const rotSpeed = (Math.random() - 0.5) * 0.05;
+  const rotSpeed = (Math.random() - 0.5) * 0.02;
   rotationSpeeds.set(asteroid, rotSpeed);
 
   return asteroid;
