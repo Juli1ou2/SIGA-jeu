@@ -1,4 +1,4 @@
-import { Application, Assets } from "pixi.js";
+import { Application, Assets, Sprite } from "pixi.js";
 import { Parameters } from "./parameters";
 import { launchMenu } from "./menu/menu.ts";
 import { Player } from "./entities/player";
@@ -47,6 +47,8 @@ const app = new Application();
       src: "assets/front-planet.png",
     },
   ]);
+  
+  addStars(app);
 
   const scene = new Scene(app.screen);
   app.stage.addChild(scene.viewContainer);
@@ -67,10 +69,10 @@ const app = new Application();
       shooting.fire();
     }
     shooting.update();
+    scene.update();
   });
 
   // launchMenu(app)
-  // addStars(app);
-  // addAsteroids(app);
-  // addEnemies(app);
+  addAsteroids(app);
+  addEnemies(app);
 })();
