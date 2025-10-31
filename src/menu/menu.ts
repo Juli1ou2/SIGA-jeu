@@ -1,6 +1,6 @@
-import {Application, Assets, Sprite, Container} from "pixi.js";
+import {Application, Sprite, Container} from "pixi.js";
 import {addStars} from "../decor/stars.ts";
-import {EnemyManager} from "../entities/enemies.ts";
+import {Enemy} from "../entities/enemies.ts";
 import {addAsteroids} from "../decor/asteroid.ts";
 import {createStartButton, createResetButton} from "./buttons.ts";
 
@@ -21,12 +21,10 @@ export async function launchMenu(app: Application) {
     app.stage.addChild(uiContainer);
 
     // Création du menu
-    const startButton = await createStartButton(app);
+    const startButton = createStartButton(app);
     uiContainer.addChild(startButton);
 
-    // Charger et créer l'icône pause
-    await Assets.load(["assets/pause-button.png", "assets/reset-button.png"]);
-    const pauseIcon = Sprite.from("assets/pause-button.png");
+    const pauseIcon = Sprite.from("pause-button");
     pauseIcon.anchor.set(0.5);
 
     // Redimensionner à 200px de hauteur en gardant les proportions
@@ -41,7 +39,7 @@ export async function launchMenu(app: Application) {
     uiContainer.addChild(pauseIcon);
 
     // Créer le bouton reset
-    const resetButton = await createResetButton(app);
+    const resetButton = createResetButton(app);
     resetButton.y = app.screen.height / 2 + 100;
     resetButton.visible = false;
     resetButton.zIndex = 1000;
@@ -64,9 +62,8 @@ export async function launchMenu(app: Application) {
         STATE_MENU.pause = false;
         STATE_MENU.gameOver = false;
         addStars(app);
-        await addAsteroids(app);
-        const enemyManager = new EnemyManager(app);
-        await enemyManager.init();
+        addAsteroids(app);
+        const enemyManager = new Enemy(app);
     };
 
     // Gérer le clic sur le bouton start
