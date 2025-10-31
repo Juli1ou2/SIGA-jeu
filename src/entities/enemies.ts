@@ -3,9 +3,10 @@ import { Parameters } from "../parameters";
 
 export class Enemy {
   app: Application;
-  enemies: { sprite: Sprite; laps: number }[] = [];
+  enemies: { sprite: Sprite }[] = [];
   enemyTexture?: Texture;
   tickerCallback?: () => void;
+  private gameOver: boolean = false;
 
   private readonly scales = [0.5, 0.8, 1];
 
@@ -13,11 +14,11 @@ export class Enemy {
     this.app = app;
     this.enemyTexture = Texture.from("enemy");
     const enemiesCount = Math.floor(Math.random() * Parameters.ENEMIES_MIN_COUNT) + 5;
-  
+
     for (let i = 0; i < enemiesCount; i++) {
       this.createEnemy();
     }
-  
+
     this.startAnimation();
   }
 
@@ -32,13 +33,14 @@ export class Enemy {
     const enemyWidth = enemy.width;
     const enemyHeight = enemy.height;
 
-    const pos = this.getRandomPosition(enemyWidth, enemyHeight, undefined, false);
+    const pos = this.getRandomPosition(enemyWidth, enemyHeight);
     enemy.x = pos.x;
     enemy.y = pos.y;
 
     this.app.stage.addChild(enemy);
-    this.enemies.push({ sprite: enemy, laps: 0 });
+    this.enemies.push({ sprite: enemy });
   }
+
 
   private isPositionFree(
     x: number,
@@ -51,7 +53,6 @@ export class Enemy {
       const ex = enemyData.sprite;
 
       if (ex === excludeEnemy) continue;
-      if (enemyData.laps >= Parameters.ENEMIES_LAPS) continue;
 
       const dx = Math.abs(x - ex.x);
       const dy = Math.abs(y - ex.y);
@@ -69,20 +70,12 @@ export class Enemy {
   private getRandomPosition(
     currentEnemyWidth: number,
     currentEnemyHeight: number,
-    excludeEnemy?: Sprite,
-    isRespawn: boolean = false
+    excludeEnemy?: Sprite
   ) {
     const maxAttempts = 150;
 
     for (let i = 0; i < maxAttempts; i++) {
-      let x: number;
-
-      if (isRespawn) {
-        x = this.app.screen.width + currentEnemyWidth / 2 + Math.random() * 200;
-      } else {
-        x = this.app.screen.width / 2 + Math.random() * (this.app.screen.width / 2);
-      }
-
+      const x = this.app.screen.width + currentEnemyWidth / 2 + Math.random() * 200;
       const y = currentEnemyHeight / 2 + Math.random() * (this.app.screen.height - currentEnemyHeight);
 
       if (this.isPositionFree(x, y, currentEnemyWidth, currentEnemyHeight, excludeEnemy)) {
@@ -98,36 +91,24 @@ export class Enemy {
 
   private startAnimation() {
     this.tickerCallback = () => {
-      let allFinished = true;
+      if (this.gameOver) return;
 
       for (const enemyData of this.enemies) {
         const enemy = enemyData.sprite;
 
-        if (enemyData.laps < Parameters.ENEMIES_LAPS) {
-          allFinished = false;
-          enemy.x -= Parameters.ENEMY_SPEED;
+        enemy.x -= Parameters.ENEMY_SPEED;
 
-          if (enemy.x < -enemy.width / 2) {
-            enemyData.laps++;
+        if (enemy.x < -enemy.width / 2) {
+          const scale = this.scales[Math.floor(Math.random() * this.scales.length)];
+          enemy.scale.set(scale);
 
-            if (enemyData.laps < Parameters.ENEMIES_LAPS) {
-              const scale = this.scales[Math.floor(Math.random() * this.scales.length)];
-              enemy.scale.set(scale);
+          const enemyWidth = enemy.width;
+          const enemyHeight = enemy.height;
 
-              const enemyWidth = enemy.width;
-              const enemyHeight = enemy.height;
-
-              const newPos = this.getRandomPosition(enemyWidth, enemyHeight, enemy, true);
-              enemy.x = newPos.x;
-              enemy.y = newPos.y;
-            }
-          }
+          const newPos = this.getRandomPosition(enemyWidth, enemyHeight, enemy);
+          enemy.x = newPos.x;
+          enemy.y = newPos.y;
         }
-      }
-
-      if (allFinished) {
-        this.stopAnimation();
-        console.log("Animation des ennemis terminée !");
       }
     };
 
@@ -139,6 +120,17 @@ export class Enemy {
       this.app.ticker.remove(this.tickerCallback);
       this.tickerCallback = undefined;
     }
+  }
+
+  public destroyEnemy(sprite: Sprite) {
+    if (!this.gameOver) {
+      this.createEnemy();
+    }
+    sprite.destroy();
+  }
+
+  public setGameOver() {
+    this.gameOver = true;
   }
 
   destroy() {
