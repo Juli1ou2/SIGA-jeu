@@ -1,6 +1,5 @@
-import { Application, Assets, Bounds, Container, Sprite } from "pixi.js";
+import { Application, Assets, Bounds } from "pixi.js";
 import { Parameters } from "./parameters";
-import { launchMenu } from "./menu/menu.ts";
 import { Player } from "./entities/player";
 import { PlayerController } from "./controllers/player.controller";
 import { addAsteroids } from "./decor/asteroid.ts";
@@ -8,6 +7,7 @@ import { addStars } from "./decor/stars.ts";
 import { Shooting } from "./shooting.ts";
 import { Scene } from "./decor/scene.ts";
 import { Enemy } from "./entities/enemies.ts";
+import { Score } from "./interface/score.ts";
 
 const app = new Application();
 
@@ -17,6 +17,7 @@ const app = new Application();
 
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
+  let points = 0;
   await Assets.load([
     {
       alias: "player",
@@ -63,6 +64,9 @@ const app = new Application();
   app.stage.addChild(player.viewContainer);
   const shooting = new Shooting(app, player);
 
+  const score = new Score(points, Parameters.MAIN_COLOR);
+  app.stage.addChild(score.text);
+
   app.ticker.add((_time) => {
     if (playerController.keys.up.pressed && !player.willBeTooHigh()) {
       player.viewContainer.y -= Parameters.PLAYER_SPEED;
@@ -88,7 +92,8 @@ const app = new Application();
         rectsIntersection(b.getBounds(), e.sprite.getBounds())
       );
       if (hitBulletIndex !== -1) {
-        console.log("🔥 Ennemi détruit !");
+        points += Parameters.ENEMY_POINTS;
+        score.setText(points);
         e.sprite.destroy();
         shooting.bullets[hitBulletIndex].destroy();
         shooting.bullets.splice(hitBulletIndex, 1);
