@@ -1,8 +1,7 @@
 import {Application, Sprite, Container} from "pixi.js";
-import {addStars} from "../decor/stars.ts";
-import {Enemy} from "../entities/enemies.ts";
-import {addAsteroids} from "../decor/asteroid.ts";
 import {createStartButton, createResetButton} from "./buttons.ts";
+// @ts-ignore
+import { startGame } from "../main.ts";
 
 export async function launchMenu(app: Application) {
     const STATE_MENU = {
@@ -46,30 +45,26 @@ export async function launchMenu(app: Application) {
     uiContainer.addChild(resetButton);
 
     // Fonction pour démarrer le jeu
-    const startGame = async () => {
+    const startGameHandler = async () => {
         // Cacher le bouton start
         startButton.visible = false;
-
-        // Nettoyer l'écran (enlever tous les enfants sauf le uiContainer)
-        app.stage.children.forEach(child => {
-            if (child !== uiContainer) {
-                app.stage.removeChild(child);
-            }
-        });
 
         // Lancer le jeu
         STATE_MENU.play = true;
         STATE_MENU.pause = false;
         STATE_MENU.gameOver = false;
-        addStars(app);
-        addAsteroids(app);
-        const enemyManager = new Enemy(app);
+        startGame(app, () => {
+            // Callback appelé quand le joueur est touché
+            STATE_MENU.gameOver = true;
+            resetButton.visible = true;
+            app.renderer.render(app.stage);
+        });
     };
 
     // Gérer le clic sur le bouton start
     startButton.on("pointerdown", async () => {
         console.log("okay tu as clique dans el addeventlistener");
-        await startGame();
+        await startGameHandler();
     });
 
     // Gérer le clic sur le bouton reset

@@ -8,6 +8,7 @@ import { Shooting } from "./shooting.ts";
 import { Scene } from "./decor/scene.ts";
 import { Enemy } from "./entities/enemies.ts";
 import { Score } from "./interface/score.ts";
+import { launchMenu } from "./interface/menu.ts";
 
 const app = new Application();
 
@@ -17,7 +18,6 @@ const app = new Application();
 
   document.getElementById("pixi-container")!.appendChild(app.canvas);
 
-  let points = 0;
   await Assets.load([
     {
       alias: "player",
@@ -49,12 +49,17 @@ const app = new Application();
     },
   ]);
 
+  launchMenu(app);
+})();
+
+export function startGame(app: Application, onGameOver?: () => void) {
+  let points = 0;
+
   addStars(app);
 
   const scene = new Scene(app.screen);
   app.stage.addChild(scene.viewContainer);
 
-  // launchMenu(app)
   addAsteroids(app);
 
   const enemy = new Enemy(app);
@@ -78,7 +83,9 @@ const app = new Application();
       shooting.fire();
     }
 
-    enemy.enemies = enemy.enemies.filter((e) => {
+    for (let i = enemy.enemies.length - 1; i >= 0; i--) {
+      const e = enemy.enemies[i];
+
       if (
         rectsIntersection(
           player.viewContainer.getBounds(),
@@ -87,6 +94,11 @@ const app = new Application();
       ) {
         console.log("💥 Joueur touché !");
         player.graphics.destroy();
+        enemy.setGameOver();
+        app.ticker.stop();
+        if (onGameOver) {
+          onGameOver();
+        }
       }
 
       const hitBulletIndex = shooting.bullets.findIndex((b) =>
@@ -95,18 +107,17 @@ const app = new Application();
       if (hitBulletIndex !== -1) {
         points += Parameters.ENEMY_POINTS;
         score.setText(points);
-        e.sprite.destroy();
+        enemy.destroyEnemy(e.sprite);
+        enemy.enemies.splice(i, 1);
         shooting.bullets[hitBulletIndex].destroy();
         shooting.bullets.splice(hitBulletIndex, 1);
-        return false;
       }
-      return true;
-    });
+    }
 
     shooting.update();
     scene.update();
   });
-})();
+}
 
 function rectsIntersection(aBounds: Bounds, bBounds: Bounds) {
   return (
