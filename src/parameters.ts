@@ -6,7 +6,9 @@ export enum Parameters {
 
     BULLET_SPEED = 5,
     BULLET_RADIUS = 8,
-    BULLET_MAX = 20,
+    BULLET_MAX = 100,
     BULLET_COOLDOWN = 300,
     BULLET_COLOR = "#a8cbffff",
+
+    ENEMY_POINTS = 100,
 }

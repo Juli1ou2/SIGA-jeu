@@ -11,7 +11,7 @@ export class Player {
     this.viewContainer = new Container();
     this.screen = _screen;
 
-    this.graphics = new Graphics().rect(0, 0, 74, 34).fill(texture);
+    this.graphics = new Graphics().rect(0, 0, 72, 72).fill(texture);
     this.viewContainer.addChild(this.graphics);
 
     this.viewContainer.x = this.screen.width / 6;

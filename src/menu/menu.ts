@@ -21,7 +21,7 @@ export async function launchMenu(app: Application) {
     app.stage.addChild(uiContainer);
 
     // Création du menu
-    const startButton = await createStartButton(app);
+    const startButton = createStartButton(app);
     uiContainer.addChild(startButton);
 
     const pauseIcon = Sprite.from("pause-button");
@@ -39,7 +39,7 @@ export async function launchMenu(app: Application) {
     uiContainer.addChild(pauseIcon);
 
     // Créer le bouton reset
-    const resetButton = await createResetButton(app);
+    const resetButton = createResetButton(app);
     resetButton.y = app.screen.height / 2 + 100;
     resetButton.visible = false;
     resetButton.zIndex = 1000;
@@ -62,8 +62,8 @@ export async function launchMenu(app: Application) {
         STATE_MENU.pause = false;
         STATE_MENU.gameOver = false;
         addStars(app);
-        await addAsteroids(app);
-        await addEnemies(app);
+        addAsteroids(app);
+        addEnemies(app);
     };
 
     // Gérer le clic sur le bouton start

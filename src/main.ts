@@ -7,6 +7,7 @@ import { addAsteroids } from "./decor/asteroid.ts";
 import { addStars } from "./decor/stars.ts";
 import { addEnemies } from "./entities/enemies.ts";
 import { Shooting } from "./shooting.ts";
+import { Scene } from "./decor/scene.ts";
 
 const app = new Application();
 
@@ -33,7 +34,22 @@ const app = new Application();
       alias: "pause-button",
       src: "assets/pause-button.png",
     },
+    {
+      alias: "enemy",
+      src: "assets/enemy.svg",
+    },
+    {
+      alias: "background-planet",
+      src: "assets/back-planet.png",
+    },
+    {
+      alias: "midground-planet",
+      src: "assets/front-planet.png",
+    },
   ]);
+
+  const scene = new Scene(app.screen);
+  app.stage.addChild(scene.viewContainer);
 
   const playerController = new PlayerController();
   const player = new Player(app.screen);
@@ -54,7 +70,7 @@ const app = new Application();
   });
 
   // launchMenu(app)
-  addStars(app);
-  await addAsteroids(app);
-  await addEnemies(app);
+  // addStars(app);
+  // addAsteroids(app);
+  // addEnemies(app);
 })();

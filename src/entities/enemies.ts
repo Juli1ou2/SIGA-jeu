@@ -1,7 +1,7 @@
-import { Application, Assets, Sprite } from "pixi.js";
+import { Application, Sprite, Texture } from "pixi.js";
 
-export async function addEnemies(app: Application) {
-  const enemyTexture = await Assets.load("assets/enemy.svg");
+export function addEnemies(app: Application) {
+  const enemyTexture = Texture.from('enemy');
   const enemiesCount = Math.floor(Math.random() * 17) + 5;
   const enemies: { sprite: Sprite; laps: number }[] = [];
 

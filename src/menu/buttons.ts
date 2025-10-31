@@ -1,6 +1,6 @@
 import {Application, Sprite, Texture} from 'pixi.js';
 
-export async function createStartButton(app: Application) {
+export function createStartButton(app: Application) {
     // Create button texture
     const textureButton = Texture.from('start-button');
 
@@ -27,7 +27,7 @@ export async function createStartButton(app: Application) {
     return startButton;
 }
 
-export async function createResetButton(app: Application) {
+export function createResetButton(app: Application) {
     // Create button texture
     const textureButton = Texture.from('reset-button');
 
