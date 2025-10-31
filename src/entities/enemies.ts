@@ -1,38 +1,68 @@
-import { Application, Sprite, Texture } from "pixi.js";
+import { Application, Assets, Sprite, Texture } from "pixi.js";
 
-export function addEnemies(app: Application) {
-  const enemyTexture = Texture.from('enemy');
-  const enemiesCount = Math.floor(Math.random() * 17) + 5;
-  const enemies: { sprite: Sprite; laps: number }[] = [];
+export class EnemyManager {
+  private app: Application;
+  private enemies: { sprite: Sprite; laps: number }[] = [];
+  private enemyTexture?: Texture;
+  private tickerCallback?: () => void;
 
-  const speed = 5;
-  const maxLaps = 10;
-  const scales = [0.5, 0.8, 1];
-  const margin = 30; // Marge de sécurité entre les ennemis
+  private readonly speed = 5;
+  private readonly maxLaps = 10;
+  private readonly scales = [0.5, 0.8, 1];
+  private readonly margin = 30;
 
-  // Fonction pour vérifier si une position est libre
-  function isPositionFree(
-      x: number,
-      y: number,
-      width: number,
-      height: number,
-      excludeEnemy?: Sprite
+  constructor(app: Application) {
+    this.app = app;
+  }
+
+  async init() {
+    this.enemyTexture = await Assets.load("assets/enemy.svg");
+    const enemiesCount = Math.floor(Math.random() * 17) + 5;
+
+    for (let i = 0; i < enemiesCount; i++) {
+      this.createEnemy();
+    }
+
+    this.startAnimation();
+  }
+
+  private createEnemy() {
+    if (!this.enemyTexture) return;
+
+    const scale = this.scales[Math.floor(Math.random() * this.scales.length)];
+    const enemy = new Sprite(this.enemyTexture);
+    enemy.anchor.set(0.5);
+    enemy.scale.set(scale);
+
+    const enemyWidth = enemy.width;
+    const enemyHeight = enemy.height;
+
+    const pos = this.getRandomPosition(enemyWidth, enemyHeight, undefined, false);
+    enemy.x = pos.x;
+    enemy.y = pos.y;
+
+    this.app.stage.addChild(enemy);
+    this.enemies.push({ sprite: enemy, laps: 0 });
+  }
+
+  private isPositionFree(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    excludeEnemy?: Sprite
   ): boolean {
-    for (const enemyData of enemies) {
+    for (const enemyData of this.enemies) {
       const ex = enemyData.sprite;
 
-      // Ignorer l'ennemi en cours de repositionnement
       if (ex === excludeEnemy) continue;
+      if (enemyData.laps >= this.maxLaps) continue;
 
-      // Ignorer les ennemis qui ont terminé leurs tours
-      if (enemyData.laps >= maxLaps) continue;
-
-      // Vérifier le chevauchement rectangulaire
       const dx = Math.abs(x - ex.x);
       const dy = Math.abs(y - ex.y);
 
-      const minDistX = (width + ex.width) / 2 + margin;
-      const minDistY = (height + ex.height) / 2 + margin;
+      const minDistX = (width + ex.width) / 2 + this.margin;
+      const minDistY = (height + ex.height) / 2 + this.margin;
 
       if (dx < minDistX && dy < minDistY) {
         return false;
@@ -41,12 +71,11 @@ export function addEnemies(app: Application) {
     return true;
   }
 
-  // Fonction pour générer une position aléatoire sans chevauchement
-  function getRandomPosition(
-      currentEnemyWidth: number,
-      currentEnemyHeight: number,
-      excludeEnemy?: Sprite,
-      isRespawn: boolean = false
+  private getRandomPosition(
+    currentEnemyWidth: number,
+    currentEnemyHeight: number,
+    excludeEnemy?: Sprite,
+    isRespawn: boolean = false
   ) {
     const maxAttempts = 150;
 
@@ -54,82 +83,74 @@ export function addEnemies(app: Application) {
       let x: number;
 
       if (isRespawn) {
-        // Pour le respawn, placer à droite de l'écran
-        x = app.screen.width + currentEnemyWidth / 2 + Math.random() * 200;
+        x = this.app.screen.width + currentEnemyWidth / 2 + Math.random() * 200;
       } else {
-        // Pour la création initiale
-        x = app.screen.width / 2 + Math.random() * (app.screen.width / 2);
+        x = this.app.screen.width / 2 + Math.random() * (this.app.screen.width / 2);
       }
 
-      const y = currentEnemyHeight / 2 + Math.random() * (app.screen.height - currentEnemyHeight);
+      const y = currentEnemyHeight / 2 + Math.random() * (this.app.screen.height - currentEnemyHeight);
 
-      if (isPositionFree(x, y, currentEnemyWidth, currentEnemyHeight, excludeEnemy)) {
+      if (this.isPositionFree(x, y, currentEnemyWidth, currentEnemyHeight, excludeEnemy)) {
         return { x, y };
       }
     }
 
-    // Position de secours si aucune position libre trouvée
     return {
-      x: app.screen.width + currentEnemyWidth / 2 + Math.random() * 300,
-      y: app.screen.height / 2
+      x: this.app.screen.width + currentEnemyWidth / 2 + Math.random() * 300,
+      y: this.app.screen.height / 2
     };
   }
 
-  // Créer les ennemis avec des positions non chevauchantes
-  for (let i = 0; i < enemiesCount; i++) {
-    const scale = scales[Math.floor(Math.random() * scales.length)];
-    const enemy = new Sprite(enemyTexture);
-    enemy.anchor.set(0.5);
-    enemy.scale.set(scale);
+  private startAnimation() {
+    this.tickerCallback = () => {
+      let allFinished = true;
 
-    const enemyWidth = enemy.width;
-    const enemyHeight = enemy.height;
+      for (const enemyData of this.enemies) {
+        const enemy = enemyData.sprite;
 
-    const pos = getRandomPosition(enemyWidth, enemyHeight, undefined, false);
-    enemy.x = pos.x;
-    enemy.y = pos.y;
+        if (enemyData.laps < this.maxLaps) {
+          allFinished = false;
+          enemy.x -= this.speed;
 
-    app.stage.addChild(enemy);
-    enemies.push({ sprite: enemy, laps: 0 });
-  }
+          if (enemy.x < -enemy.width / 2) {
+            enemyData.laps++;
 
-  // Boucle d'animation
-  const tickerCallback = () => {
-    let allFinished = true;
+            if (enemyData.laps < this.maxLaps) {
+              const scale = this.scales[Math.floor(Math.random() * this.scales.length)];
+              enemy.scale.set(scale);
 
-    for (const enemyData of enemies) {
-      const enemy = enemyData.sprite;
+              const enemyWidth = enemy.width;
+              const enemyHeight = enemy.height;
 
-      if (enemyData.laps < maxLaps) {
-        allFinished = false;
-        enemy.x -= speed;
-
-        // Si l'ennemi sort à gauche
-        if (enemy.x < -enemy.width / 2) {
-          enemyData.laps++;
-
-          if (enemyData.laps < maxLaps) {
-            // Nouvelle échelle aléatoire
-            const scale = scales[Math.floor(Math.random() * scales.length)];
-            enemy.scale.set(scale);
-
-            const enemyWidth = enemy.width;
-            const enemyHeight = enemy.height;
-
-            // Trouver une position libre en excluant cet ennemi de la vérification
-            const newPos = getRandomPosition(enemyWidth, enemyHeight, enemy, true);
-            enemy.x = newPos.x;
-            enemy.y = newPos.y;
+              const newPos = this.getRandomPosition(enemyWidth, enemyHeight, enemy, true);
+              enemy.x = newPos.x;
+              enemy.y = newPos.y;
+            }
           }
         }
       }
-    }
 
-    if (allFinished) {
-      app.ticker.remove(tickerCallback);
-      console.log("Animation terminée après 10 tours !");
-    }
-  };
+      if (allFinished) {
+        this.stopAnimation();
+        console.log("Animation terminée après 10 tours !");
+      }
+    };
 
-  app.ticker.add(tickerCallback);
+    this.app.ticker.add(this.tickerCallback);
+  }
+
+  private stopAnimation() {
+    if (this.tickerCallback) {
+      this.app.ticker.remove(this.tickerCallback);
+      this.tickerCallback = undefined;
+    }
+  }
+
+  destroy() {
+    this.stopAnimation();
+    for (const enemyData of this.enemies) {
+      enemyData.sprite.destroy();
+    }
+    this.enemies = [];
+  }
 }
