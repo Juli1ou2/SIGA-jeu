@@ -86,6 +86,7 @@ const app = new Application();
         )
       ) {
         console.log("💥 Joueur touché !");
+        player.graphics.destroy();
       }
 
       const hitBulletIndex = shooting.bullets.findIndex((b) =>
