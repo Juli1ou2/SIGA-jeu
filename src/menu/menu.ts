@@ -1,6 +1,6 @@
 import {Application, Sprite, Container} from "pixi.js";
 import {addStars} from "../decor/stars.ts";
-import {EnemyManager} from "../entities/enemies.ts";
+import {Enemy} from "../entities/enemies.ts";
 import {addAsteroids} from "../decor/asteroid.ts";
 import {createStartButton, createResetButton} from "./buttons.ts";
 
@@ -63,7 +63,7 @@ export async function launchMenu(app: Application) {
         STATE_MENU.gameOver = false;
         addStars(app);
         addAsteroids(app);
-        const enemyManager = new EnemyManager(app);
+        const enemyManager = new Enemy(app);
         enemyManager.init();
     };
 

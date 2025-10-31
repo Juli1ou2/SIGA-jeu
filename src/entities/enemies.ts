@@ -1,6 +1,6 @@
 import { Application, Assets, Sprite, Texture } from "pixi.js";
 
-export class EnemyManager {
+export class Enemy {
   private app: Application;
   private enemies: { sprite: Sprite; laps: number }[] = [];
   private enemyTexture?: Texture;

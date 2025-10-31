@@ -1,11 +1,10 @@
-import { Application, Assets, Sprite } from "pixi.js";
+import { Application, Assets } from "pixi.js";
 import { Parameters } from "./parameters";
 import { launchMenu } from "./menu/menu.ts";
 import { Player } from "./entities/player";
 import { PlayerController } from "./controllers/player.controller";
 import { addAsteroids } from "./decor/asteroid.ts";
 import { addStars } from "./decor/stars.ts";
-import { addEnemies } from "./entities/enemies.ts";
 import { Shooting } from "./shooting.ts";
 import { Scene } from "./decor/scene.ts";
 
@@ -47,7 +46,7 @@ const app = new Application();
       src: "assets/front-planet.png",
     },
   ]);
-  
+
   addStars(app);
 
   const scene = new Scene(app.screen);
@@ -74,5 +73,4 @@ const app = new Application();
 
   // launchMenu(app)
   addAsteroids(app);
-  addEnemies(app);
 })();
