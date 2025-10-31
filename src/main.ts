@@ -1,7 +1,7 @@
 import { Application, Assets, Bounds } from "pixi.js";
 import { Parameters } from "./parameters";
 import { Player } from "./entities/player";
-import { PlayerController } from "./controllers/player.controller";
+import { PlayerController } from "./entities/player.controller.ts";
 import { addAsteroids } from "./decor/asteroid.ts";
 import { addStars } from "./decor/stars.ts";
 import { Shooting } from "./shooting.ts";
