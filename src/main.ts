@@ -92,7 +92,6 @@ export function startGame(app: Application, onGameOver?: () => void) {
           e.sprite.getBounds()
         )
       ) {
-        console.log("💥 Joueur touché !");
         player.graphics.destroy();
         enemy.setGameOver();
         app.ticker.stop();
