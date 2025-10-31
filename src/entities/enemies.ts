@@ -1,28 +1,23 @@
-import { Application, Assets, Sprite, Texture } from "pixi.js";
+import { Application, Sprite, Texture } from "pixi.js";
+import { Parameters } from "../parameters";
 
 export class Enemy {
-  private app: Application;
-  private enemies: { sprite: Sprite; laps: number }[] = [];
-  private enemyTexture?: Texture;
-  private tickerCallback?: () => void;
+  app: Application;
+  enemies: { sprite: Sprite; laps: number }[] = [];
+  enemyTexture?: Texture;
+  tickerCallback?: () => void;
 
-  private readonly speed = 5;
-  private readonly maxLaps = 10;
   private readonly scales = [0.5, 0.8, 1];
-  private readonly margin = 30;
 
   constructor(app: Application) {
     this.app = app;
-  }
-
-  async init() {
-    this.enemyTexture = await Assets.load("assets/enemy.svg");
-    const enemiesCount = Math.floor(Math.random() * 17) + 5;
-
+    this.enemyTexture = Texture.from("enemy");
+    const enemiesCount = Math.floor(Math.random() * Parameters.ENEMIES_MIN_COUNT) + 5;
+  
     for (let i = 0; i < enemiesCount; i++) {
       this.createEnemy();
     }
-
+  
     this.startAnimation();
   }
 
@@ -56,13 +51,13 @@ export class Enemy {
       const ex = enemyData.sprite;
 
       if (ex === excludeEnemy) continue;
-      if (enemyData.laps >= this.maxLaps) continue;
+      if (enemyData.laps >= Parameters.ENEMIES_LAPS) continue;
 
       const dx = Math.abs(x - ex.x);
       const dy = Math.abs(y - ex.y);
 
-      const minDistX = (width + ex.width) / 2 + this.margin;
-      const minDistY = (height + ex.height) / 2 + this.margin;
+      const minDistX = (width + ex.width) / 2 + Parameters.ENEMY_MARGIN;
+      const minDistY = (height + ex.height) / 2 + Parameters.ENEMY_MARGIN;
 
       if (dx < minDistX && dy < minDistY) {
         return false;
@@ -108,14 +103,14 @@ export class Enemy {
       for (const enemyData of this.enemies) {
         const enemy = enemyData.sprite;
 
-        if (enemyData.laps < this.maxLaps) {
+        if (enemyData.laps < Parameters.ENEMIES_LAPS) {
           allFinished = false;
-          enemy.x -= this.speed;
+          enemy.x -= Parameters.ENEMY_SPEED;
 
           if (enemy.x < -enemy.width / 2) {
             enemyData.laps++;
 
-            if (enemyData.laps < this.maxLaps) {
+            if (enemyData.laps < Parameters.ENEMIES_LAPS) {
               const scale = this.scales[Math.floor(Math.random() * this.scales.length)];
               enemy.scale.set(scale);
 
@@ -132,7 +127,7 @@ export class Enemy {
 
       if (allFinished) {
         this.stopAnimation();
-        console.log("Animation terminée après 10 tours !");
+        console.log("Animation des ennemis terminée !");
       }
     };
 

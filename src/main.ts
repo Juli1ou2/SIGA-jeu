@@ -1,4 +1,4 @@
-import { Application, Assets } from "pixi.js";
+import { Application, Assets, Bounds, Container, Sprite } from "pixi.js";
 import { Parameters } from "./parameters";
 import { launchMenu } from "./menu/menu.ts";
 import { Player } from "./entities/player";
@@ -7,6 +7,7 @@ import { addAsteroids } from "./decor/asteroid.ts";
 import { addStars } from "./decor/stars.ts";
 import { Shooting } from "./shooting.ts";
 import { Scene } from "./decor/scene.ts";
+import { Enemy } from "./entities/enemies.ts";
 
 const app = new Application();
 
@@ -52,6 +53,11 @@ const app = new Application();
   const scene = new Scene(app.screen);
   app.stage.addChild(scene.viewContainer);
 
+  // launchMenu(app)
+  addAsteroids(app);
+
+  const enemy = new Enemy(app);
+
   const playerController = new PlayerController();
   const player = new Player(app.screen);
   app.stage.addChild(player.viewContainer);
@@ -67,10 +73,40 @@ const app = new Application();
     if (playerController.keys.space.pressed) {
       shooting.fire();
     }
+
+    enemy.enemies = enemy.enemies.filter((e) => {
+      if (
+        rectsIntersection(
+          player.viewContainer.getBounds(),
+          e.sprite.getBounds()
+        )
+      ) {
+        console.log("💥 Joueur touché !");
+      }
+
+      const hitBulletIndex = shooting.bullets.findIndex((b) =>
+        rectsIntersection(b.getBounds(), e.sprite.getBounds())
+      );
+      if (hitBulletIndex !== -1) {
+        console.log("🔥 Ennemi détruit !");
+        e.sprite.destroy();
+        shooting.bullets[hitBulletIndex].destroy();
+        shooting.bullets.splice(hitBulletIndex, 1);
+        return false;
+      }
+      return true;
+    });
+
     shooting.update();
     scene.update();
   });
-
-  // launchMenu(app)
-  addAsteroids(app);
 })();
+
+function rectsIntersection(aBounds: Bounds, bBounds: Bounds) {
+  return (
+    aBounds.x + aBounds.width > bBounds.x &&
+    aBounds.x < bBounds.x + bBounds.width &&
+    aBounds.y + aBounds.height > bBounds.y &&
+    aBounds.y < bBounds.y + bBounds.height
+  );
+}

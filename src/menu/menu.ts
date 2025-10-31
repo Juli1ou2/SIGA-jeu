@@ -64,7 +64,6 @@ export async function launchMenu(app: Application) {
         addStars(app);
         addAsteroids(app);
         const enemyManager = new Enemy(app);
-        enemyManager.init();
     };
 
     // Gérer le clic sur le bouton start

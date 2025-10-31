@@ -11,4 +11,8 @@ export enum Parameters {
     BULLET_COLOR = "#a8cbffff",
 
     ENEMY_POINTS = 100,
+    ENEMY_SPEED = 5,
+    ENEMY_MARGIN = 30,
+    ENEMIES_LAPS = 20,
+    ENEMIES_MIN_COUNT = 17,
 }
